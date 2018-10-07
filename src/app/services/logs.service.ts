@@ -30,9 +30,9 @@ export class LogsService {
     ];
   }
 
-  getLogs() {
+  getLogs(): Observable<Log[]> {
     console.log("Fetching logs from service...");
-    return this.logs;
+    return of(this.logs);
   }
 
   setFormLog(log: Log) {
