@@ -18,28 +18,16 @@ export class LogsService {
   stateClear = this.stateSource.asObservable();
 
   constructor() {
-    this.logs = [
-      // {
-      //   id: "1",
-      //   text: "Generated components",
-      //   date: new Date("12/27/2017 09:33:12")
-      // },
-      // {
-      //   id: "2",
-      //   text: "Added bootstrap",
-      //   date: new Date("12/28/2017 12:45:10")
-      // },
-      // {
-      //   id: "3",
-      //   text: "Log form component",
-      //   date: new Date("12/20/2017 02:12:56")
-      // }
-    ];
+    this.logs = [];
   }
 
   getLogs(): Observable<Log[]> {
-    console.log("Fetching logs from service...");
-    return of(this.logs);
+    if (localStorage.getItem("logs") === null) {
+      this.logs = [];
+    } else {
+      this.logs = JSON.parse(localStorage.getItem("logs"));
+    }
+    return of(this.logs.sort((a, b) => b.date - a.date));
   }
 
   setFormLog(log: Log) {
@@ -48,6 +36,9 @@ export class LogsService {
 
   addLog(log: Log) {
     this.logs.unshift(log);
+
+    // ADD TO LOCAL STORAGE
+    localStorage.setItem("logs", JSON.stringify(this.logs));
   }
 
   updateLog(log: Log) {
@@ -57,6 +48,9 @@ export class LogsService {
       }
     });
     this.logs.unshift(log);
+
+    // UPDATE TO LOCAL STORAGE
+    localStorage.setItem("logs", JSON.stringify(this.logs));
   }
 
   deleteLog(log: Log) {
@@ -65,6 +59,9 @@ export class LogsService {
         this.logs.splice(index, 1);
       }
     });
+
+    // DELETE TO LOCAL STORAGE
+    localStorage.setItem("logs", JSON.stringify(this.logs));
   }
 
   clearState() {
